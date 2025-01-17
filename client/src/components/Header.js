@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Header = ({ authToken, onLogout }) => (
   <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
     <div className="container-fluid">
-      <Link className="navbar-brand" to="/home">
+      <Link className="navbar-brand" to={authToken ? "/home" : "/"}>
         MyApp
       </Link>
       <button

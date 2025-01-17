@@ -4,12 +4,12 @@ import Header from './components/Header';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
-import Welcome from './components/Welcome'; // Import Welcome
-import Home from './components/Home'; // Import Home
+import Welcome from './components/Welcome';
+import Home from './components/Home';
+import AboutUs from './components/AboutUs';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import AboutUs from './components/AboutUs';
 function App() {
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
 
@@ -27,18 +27,17 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setAuthToken(null);
-    
   };
 
   return (
     <Router>
       <Header authToken={authToken} onLogout={handleLogout} />
       <Routes>
-        <Route path="/" element={<Welcome />} /> {/* Welcome page for unauthenticated users */}
+        <Route path="/" element={authToken ? <Home /> : <Welcome />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/home" element={authToken ? <Home /> : <Navigate to="/login" />} /> {/* Home after login */}
+        <Route path="/home" element={authToken ? <Home /> : <Navigate to="/login" />} />
         <Route path="/profile" element={authToken ? <Profile /> : <Navigate to="/login" />} />
       </Routes>
     </Router>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function Signup() {
     mobile: '',
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -22,6 +25,7 @@ function Signup() {
     try {
       await axios.post('http://localhost:5000/api/users/signup', formData);
       alert('Signup successful!');
+      navigate('/login'); // Redirect to the login page after successful signup
     } catch (error) {
       alert('Failed to sign up');
     }

@@ -2,23 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = ({ authToken, onLogout }) => (
-  <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div className="container-fluid">
+  <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div className="container">
       <Link className="navbar-brand" to={authToken ? "/home" : "/"}>
-        MyApp
+        <strong>MyApp</strong>
       </Link>
       <button
         className="navbar-toggler"
         type="button"
         data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
+        data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown"
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
         <span className="navbar-toggler-icon"></span>
       </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
+      <div className="collapse navbar-collapse" id="navbarNavDropdown">
         <ul className="navbar-nav ms-auto">
           {authToken ? (
             <>
@@ -34,11 +34,15 @@ const Header = ({ authToken, onLogout }) => (
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/aboutus">
-                  <i className="fas fa-info-circle"></i> About
+                  <i className="fas fa-info-circle"></i> About Us
                 </Link>
               </li>
               <li className="nav-item">
-                <button className="btn btn-link nav-link text-white" onClick={onLogout}>
+                <button
+                  className="btn btn-link nav-link"
+                  style={{ color: '#d9534f' }}
+                  onClick={onLogout}
+                >
                   <i className="fas fa-sign-out-alt"></i> Logout
                 </button>
               </li>
@@ -62,7 +66,7 @@ const Header = ({ authToken, onLogout }) => (
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/aboutus">
-                  <i className="fas fa-info-circle"></i> About
+                  <i className="fas fa-info-circle"></i> About Us
                 </Link>
               </li>
             </>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,9 +11,10 @@ function Signup() {
     dob: '',
     city: '',
     gender: '',
-    mobile: '',
+    mobile: '', // Simplified for phone number only
   });
 
+  const [message, setMessage] = useState({ type: '', text: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,17 +25,42 @@ function Signup() {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5000/api/users/signup', formData);
-      alert('Signup successful!');
-      navigate('/login'); // Redirect to the login page after successful signup
+      setMessage({ type: 'success', text: 'Signup successful! Redirecting to login...' });
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
     } catch (error) {
-      alert('Failed to sign up');
+      const errorMsg = error.response?.data?.error || 'Failed to sign up. Please try again.';
+      setMessage({ type: 'error', text: errorMsg });
     }
   };
+
+  // Fade messages after 3 seconds
+  useEffect(() => {
+    if (message.text) {
+      const timer = setTimeout(() => {
+        setMessage({ type: '', text: '' });
+      }, 3000);
+      return () => clearTimeout(timer); // Cleanup the timeout
+    }
+  }, [message]);
 
   return (
     <div className="container mt-5">
       <form onSubmit={handleSubmit} className="w-50 mx-auto p-3 border rounded">
         <h2 className="text-center mb-4">Signup</h2>
+
+        {/* Message Display */}
+        {message.text && (
+          <div
+            className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
+            role="alert"
+          >
+            {message.text}
+          </div>
+        )}
+
+        {/* Form Fields */}
         <div className="mb-3">
           <label className="form-label">Username</label>
           <input

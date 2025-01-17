@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +15,7 @@ function Login({ onLogin }) {
       onLogin(response.data.token); // Pass the token to the parent component (App.js)
       navigate('/home'); // Redirect to the Home component
     } catch (error) {
-      alert('Failed to login');
+      setError('Failed to login. Please check your credentials.');
     }
   };
 
@@ -22,6 +23,7 @@ function Login({ onLogin }) {
     <div className="container mt-5">
       <form onSubmit={handleSubmit} className="w-50 mx-auto p-3 border rounded">
         <h2 className="text-center mb-4">Login</h2>
+        {error && <p className="text-danger text-center">{error}</p>}
         <div className="mb-3">
           <label className="form-label">Email</label>
           <input

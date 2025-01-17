@@ -1,58 +1,23 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+require('dotenv').config();
+
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
-const server = http.createServer(app);
-
-// Initialize Socket.IO server
-const io = new Server(server, {
-  cors: {
-    origin: 'http://localhost:3000', // Replace with your frontend's origin code
-    methods: ['GET', 'POST'],
-  },
-});
-
-// Middleware
 app.use(cors());
+app.use(bodyParser.json());
 
-// Store messages for each room
-const roomMessages = {};
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('Error connecting to MongoDB:', err));
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+// Routes
+app.use('/api/users', userRoutes);
 
-  // Handle joining a room
-  socket.on('join_room', (roomCode) => {
-    socket.join(roomCode);
-
-    // Send previous messages to the newly joined user
-    const previousMessages = roomMessages[roomCode] || [];
-    socket.emit('load_previous_messages', previousMessages);
-
-    console.log(`User ${socket.id} joined room: ${roomCode}`);
-  });
-
-  // Handle sending a message
-  socket.on('send_message', ({ encryptedMessage, roomCode }) => {
-    if (!roomMessages[roomCode]) {
-      roomMessages[roomCode] = [];
-    }
-    roomMessages[roomCode].push(encryptedMessage);
-
-    // Broadcast the message to everyone in the room
-    io.to(roomCode).emit('receive_message', encryptedMessage);
-  });
-
-  // Handle user disconnect
-  socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
-  });
-});
-
-// Start the server
-const PORT = 3001;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

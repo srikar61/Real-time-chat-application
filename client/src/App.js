@@ -7,7 +7,9 @@ import Profile from './components/Profile';
 import Welcome from './components/Welcome'; // Import Welcome
 import Home from './components/Home'; // Import Home
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
+import AboutUs from './components/AboutUs';
 function App() {
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
 
@@ -25,6 +27,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setAuthToken(null);
+    
   };
 
   return (
@@ -34,6 +37,7 @@ function App() {
         <Route path="/" element={<Welcome />} /> {/* Welcome page for unauthenticated users */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/home" element={authToken ? <Home /> : <Navigate to="/login" />} /> {/* Home after login */}
         <Route path="/profile" element={authToken ? <Profile /> : <Navigate to="/login" />} />
       </Routes>

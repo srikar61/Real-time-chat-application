@@ -1,9 +1,10 @@
 import React from 'react';
 
 const Home = () => (
+  
   <div className="container mt-5">
-    <h1>Welcome to the Home Page!</h1>
-    <p>You are logged in.</p><i className="fas fa-cogs"></i>
+    <h1>Welcome to the Quick Chat</h1>
+    <p></p><i className="fas fa-cogs"></i>
 
   </div>
 );

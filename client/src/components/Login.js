@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import toast
 
 function Login({ onLogin }) {
+  document.title='Login'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,10 +14,12 @@ function Login({ onLogin }) {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
-      onLogin(response.data.token); // Pass the token to the parent component (App.js)
-      navigate('/home'); // Redirect to the Home component
+      onLogin(response.data.token);
+      navigate('/home');
+      toast.success('Login successful!'); // Success toast
     } catch (error) {
       setError('Failed to login. Please check your credentials.');
+      toast.error('Login failed. Please check your credentials.'); // Error toast
     }
   };
 

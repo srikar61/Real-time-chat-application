@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Profile() {
+  document.title='Profile';
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
@@ -29,7 +30,7 @@ function Profile() {
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(''), 3000); // Clear the message after 3 seconds
-      return () => clearTimeout(timer); // Cleanup the timer
+      return () => clearTimeout(timer); // Cleanup the timer on component unmount or message change
     }
   }, [message]);
 
@@ -45,7 +46,17 @@ function Profile() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setUser(response.data.user);
+      const updatedUser = response.data.user;
+      const dob = new Date(updatedUser.dob);
+      const age =
+        new Date().getFullYear() -
+        dob.getFullYear() -
+        (new Date().getMonth() < dob.getMonth() ||
+        (new Date().getMonth() === dob.getMonth() && new Date().getDate() < dob.getDate())
+          ? 1
+          : 0);
+
+      setUser({ ...updatedUser, age });
       setEditMode(false);
       setMessage('Profile updated successfully.');
     } catch (error) {
@@ -69,51 +80,27 @@ function Profile() {
 
   return (
     <div className="container mt-5">
-      <div className="card shadow-lg border-0">
-        <div className="card-header bg-primary text-white text-center">
-          <h2>{user.accountName}'s Profile</h2>
-        </div>
+      <div className="card p-3">
+        <h2 className="card-title text-center">{user.accountName}'s Profile</h2>
+        {message && <p className="text-center text-info">{message}</p>}
         <div className="card-body">
-          {message && <div className="alert alert-info text-center">{message}</div>}
           {!editMode ? (
-            <div className="row">
-              <div className="col-md-4 text-center">
-                <img
-                  src="https://via.placeholder.com/150" // Placeholder image, replace with real profile image URL
-                  alt="Profile"
-                  className="rounded-circle img-fluid mb-3"
-                  style={{ width: '150px', height: '150px' }}
-                />
-                <h4>{user.username}</h4>
-                <p className="text-muted">{user.email}</p>
-              </div>
-              <div className="col-md-8">
-                <ul className="list-group">
-                  <li className="list-group-item">
-                    <strong>City:</strong> {user.city}
-                  </li>
-                  <li className="list-group-item">
-                    <strong>Gender:</strong> {user.gender}
-                  </li>
-                  <li className="list-group-item">
-                    <strong>Mobile:</strong> {user.mobile}
-                  </li>
-                  <li className="list-group-item">
-                    <strong>Age:</strong> {user.age} years
-                  </li>
-                </ul>
-                <div className="mt-4">
-                  <button className="btn btn-primary me-2" onClick={() => setEditMode(true)}>
-                    Edit Profile
-                  </button>
-                  <button className="btn btn-danger" onClick={handleDelete}>
-                    Delete Profile
-                  </button>
-                </div>
-              </div>
-            </div>
+            <>
+              <p><strong>Username:</strong> {user.username}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>City:</strong> {user.city}</p>
+              <p><strong>Gender:</strong> {user.gender}</p>
+              <p><strong>Mobile:</strong> {user.mobile}</p>
+              <p><strong>Age:</strong> {user.age} years</p>
+              <button className="btn btn-primary me-2" onClick={() => setEditMode(true)}>
+                Edit Profile
+              </button>
+              <button className="btn btn-danger" onClick={handleDelete}>
+                Delete Profile
+              </button>
+            </>
           ) : (
-            <div>
+            <>
               <div className="mb-3">
                 <label className="form-label">Username</label>
                 <input
@@ -183,7 +170,7 @@ function Profile() {
               <button className="btn btn-secondary" onClick={() => setEditMode(false)}>
                 Cancel
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

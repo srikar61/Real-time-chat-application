@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import toast
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ function Signup() {
     gender: '',
     mobile: '', // Simplified for phone number only
   });
-
+  document.title='Sign Up';
   const [message, setMessage] = useState({ type: '', text: '' });
   const navigate = useNavigate();
 
@@ -26,16 +27,17 @@ function Signup() {
     try {
       await axios.post('http://localhost:5000/api/users/signup', formData);
       setMessage({ type: 'success', text: 'Signup successful! Redirecting to login...' });
+      toast.success('Signup successful! Redirecting to login...');
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Failed to sign up. Please try again.';
       setMessage({ type: 'error', text: errorMsg });
+      toast.error(errorMsg); // Error toast
     }
   };
 
-  // Fade messages after 3 seconds
   useEffect(() => {
     if (message.text) {
       const timer = setTimeout(() => {
@@ -49,8 +51,6 @@ function Signup() {
     <div className="container mt-5">
       <form onSubmit={handleSubmit} className="w-50 mx-auto p-3 border rounded">
         <h2 className="text-center mb-4">Signup</h2>
-
-        {/* Message Display */}
         {message.text && (
           <div
             className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
@@ -59,8 +59,6 @@ function Signup() {
             {message.text}
           </div>
         )}
-
-        {/* Form Fields */}
         <div className="mb-3">
           <label className="form-label">Username</label>
           <input
@@ -141,9 +139,7 @@ function Signup() {
             onChange={handleChange}
             required
           >
-            <option value="" disabled>
-              Select Gender
-            </option>
+            <option value="" disabled>Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
@@ -163,9 +159,7 @@ function Signup() {
             required
           />
         </div>
-        <button type="submit" className="btn btn-success w-100">
-          Sign Up
-        </button>
+        <button type="submit" className="btn btn-success w-100">Sign Up</button>
       </form>
     </div>
   );

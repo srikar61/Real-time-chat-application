@@ -14,7 +14,10 @@ function Login({ onLogin }) {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
-      onLogin(response.data.token);
+            onLogin({
+        token: response.data.token,
+        username: response.data.username
+      });
       navigate('/home');
       toast.success('Login successful!'); // Success toast
     } catch (error) {

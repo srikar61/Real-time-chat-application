@@ -1,36 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function Profile() {
-  document.title='Profile';
+  document.title = "Profile";
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState('');
-  const token = localStorage.getItem('authToken');
+  const [message, setMessage] = useState("");
+  const token = localStorage.getItem("authToken");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/profile', {
+        const response = await axios.get("http://localhost:5000/api/users/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
         setFormData(response.data);
       } catch (error) {
-        setMessage('Failed to fetch profile.');
+        setMessage("⚠️ Failed to fetch profile.");
       }
     };
-
     fetchProfile();
   }, [token]);
 
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => setMessage(''), 3000); // Clear the message after 3 seconds
-      return () => clearTimeout(timer); // Cleanup the timer on component unmount or message change
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
     }
   }, [message]);
 
@@ -40,142 +40,179 @@ function Profile() {
 
   const handleUpdate = async () => {
     try {
-      const response = await axios.put(
-        'http://localhost:5000/api/users/profile',
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const updatedUser = response.data.user;
-      const dob = new Date(updatedUser.dob);
-      const age =
-        new Date().getFullYear() -
-        dob.getFullYear() -
-        (new Date().getMonth() < dob.getMonth() ||
-        (new Date().getMonth() === dob.getMonth() && new Date().getDate() < dob.getDate())
-          ? 1
-          : 0);
-
-      setUser({ ...updatedUser, age });
+      await axios.put("http://localhost:5000/api/users/profile", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(formData);
       setEditMode(false);
-      setMessage('Profile updated successfully.');
+      setMessage("✅ Profile updated successfully!");
     } catch (error) {
-      setMessage('Failed to update profile.');
+      setMessage("⚠️ Failed to update profile.");
     }
   };
 
   const handleDelete = async () => {
     try {
-      await axios.delete('http://localhost:5000/api/users/profile', {
+      await axios.delete("http://localhost:5000/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      localStorage.removeItem('authToken');
-      navigate('/signup');
+      localStorage.removeItem("authToken");
+      navigate("/signup");
     } catch (error) {
-      setMessage('Failed to delete profile.');
+      setMessage("⚠️ Failed to delete profile.");
     }
   };
 
   if (!user) return <div className="text-center mt-5">Loading...</div>;
 
   return (
-    <div className="container mt-5">
-      <div className="card p-3">
-        <h2 className="card-title text-center">{user.accountName}'s Profile</h2>
-        {message && <p className="text-center text-info">{message}</p>}
+    <div style={styles.container}>
+      <motion.div 
+        className="card shadow-lg p-4" 
+        style={styles.card}
+        initial={{ opacity: 0, y: -20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.8 }}
+      >
+        <h2 className="card-title text-center mb-4" style={styles.title}>
+          {user.accountName}'s Profile
+        </h2>
+
+        {message && (
+          <motion.p 
+            className="text-center text-info" 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {message}
+          </motion.p>
+        )}
+
         <div className="card-body">
           {!editMode ? (
             <>
-              <p><strong>Username:</strong> {user.username}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>City:</strong> {user.city}</p>
-              <p><strong>Gender:</strong> {user.gender}</p>
-              <p><strong>Mobile:</strong> {user.mobile}</p>
-              <p><strong>Age:</strong> {user.age} years</p>
-              <button className="btn btn-primary me-2" onClick={() => setEditMode(true)}>
-                Edit Profile
-              </button>
-              <button className="btn btn-danger" onClick={handleDelete}>
-                Delete Profile
-              </button>
+              <ProfileField label="Username" value={user.username} />
+              <ProfileField label="Email" value={user.email} />
+              <ProfileField label="City" value={user.city} />
+              <ProfileField label="Gender" value={user.gender} />
+              <ProfileField label="Mobile" value={user.mobile} />
+              <ProfileField label="Age" value={`${user.age} years`} />
+
+              <div className="text-center mt-4">
+                <motion.button 
+                  className="btn btn-primary me-2" 
+                  style={styles.button}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit Profile
+                </motion.button>
+                <motion.button 
+                  className="btn btn-danger"
+                  style={styles.deleteButton}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={handleDelete}
+                >
+                  Delete Profile
+                </motion.button>
+              </div>
             </>
           ) : (
             <>
-              <div className="mb-3">
-                <label className="form-label">Username</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Date of Birth</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">City</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Gender</label>
-                <select
-                  className="form-select"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
+              <EditableField label="Username" name="username" value={formData.username} onChange={handleChange} />
+              <EditableField label="Email" name="email" value={formData.email} type="email" onChange={handleChange} />
+              <EditableField label="Date of Birth" name="dob" value={formData.dob} type="date" onChange={handleChange} />
+              <EditableField label="City" name="city" value={formData.city} onChange={handleChange} />
+              <EditableField label="Gender" name="gender" value={formData.gender} onChange={handleChange} type="select" />
+              <EditableField label="Mobile" name="mobile" value={formData.mobile} onChange={handleChange} />
+
+              <div className="text-center mt-4">
+                <motion.button 
+                  className="btn btn-success me-2" 
+                  style={styles.button}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={handleUpdate}
                 >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+                  Save
+                </motion.button>
+                <motion.button 
+                  className="btn btn-secondary" 
+                  style={styles.cancelButton}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => setEditMode(false)}
+                >
+                  Cancel
+                </motion.button>
               </div>
-              <div className="mb-3">
-                <label className="form-label">Mobile</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleChange}
-                />
-              </div>
-              <button className="btn btn-success me-2" onClick={handleUpdate}>
-                Save
-              </button>
-              <button className="btn btn-secondary" onClick={() => setEditMode(false)}>
-                Cancel
-              </button>
             </>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
+
+const ProfileField = ({ label, value }) => (
+  <div className="mb-3">
+    <p>
+      <strong>{label}:</strong> {value}
+    </p>
+  </div>
+);
+
+const EditableField = ({ label, name, value, type = "text", onChange }) => (
+  <div className="mb-3">
+    <label className="form-label">{label}</label>
+    {type === "select" ? (
+      <select className="form-select" name={name} value={value} onChange={onChange}>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    ) : (
+      <input type={type} className="form-control" name={name} value={value} onChange={onChange} />
+    )}
+  </div>
+);
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    background: "linear-gradient(135deg,rgb(255, 255, 255),rgb(255, 255, 255))",
+  },
+  card: {
+    background: "rgba(255, 255, 255, 0.2)",
+    borderRadius: "15px",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+  },
+  title: {
+    color: "#007bff",
+    fontWeight: "bold",
+  },
+  button: {
+    padding: "10px 20px",
+    fontSize: "16px",
+    transition: "0.3s ease-in-out",
+  },
+  deleteButton: {
+    background: "#dc3545",
+    borderColor: "#dc3545",
+    padding: "10px 20px",
+    fontSize: "16px",
+    transition: "0.3s ease-in-out",
+  },
+  cancelButton: {
+    background: "#6c757d",
+    borderColor: "#6c757d",
+    padding: "10px 20px",
+    fontSize: "16px",
+    transition: "0.3s ease-in-out",
+  },
+};
 
 export default Profile;

@@ -49,6 +49,11 @@ const Header = ({ authToken, onLogout }) => {
                     </Link>
                   </li>
                   <li className="nav-item">
+                    <Link className="nav-link text-white" to="/chat">
+                      <i className="fas fa-user-circle"></i> Chat
+                    </Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link text-white" to="/profile">
                       <i className="fas fa-user-circle"></i> Profile
                     </Link>

@@ -53,3 +53,70 @@ First, clone the repository to your local machine:
 ```bash
 git clone https://github.com/yourusername/realtime-chat-app.git
 cd realtime-chat-app
+2. Backend Setup (Node.js + Express)
+Navigate to the backend directory:
+
+bash
+Copy
+Edit
+cd backend
+Install backend dependencies:
+
+bash
+Copy
+Edit
+npm install
+Create a .env file in the root of the backend directory and add the following environment variables:
+
+env
+Copy
+Edit
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+PORT=5000
+Replace your_mongodb_connection_string with your MongoDB connection URI.
+Replace your_jwt_secret with a secret key for JWT.
+Start the backend server:
+
+bash
+Copy
+Edit
+npm start
+The backend should now be running on http://localhost:5000.
+
+3. Frontend Setup (React.js)
+Navigate to the frontend directory:
+
+bash
+Copy
+Edit
+cd frontend
+Install frontend dependencies:
+
+bash
+Copy
+Edit
+npm install
+Start the frontend server:
+
+bash
+Copy
+Edit
+npm start
+The frontend should now be running on http://localhost:3000.
+
+How to Use
+Sign Up: Create a new account by providing a username, email, and password.
+Login: Use your credentials to log into your account.
+Profile: After logging in, you can view and update your profile information.
+Chat: Start chatting with other users in real time. Select a user from the list to begin a conversation.
+Logout: Securely log out from the application.
+Contributions
+Contributions are welcome! Please feel free to fork the repository, open an issue, or submit a pull request.
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Acknowledgements
+Thanks to the MERN stack for providing an amazing framework for full-stack development.
+Special thanks to the Socket.io library for enabling real-time communication.

@@ -44,7 +44,7 @@ This is a real-time chat application built using the MERN stack (MongoDB, Expres
 ### 6. Logout
 ![Image](https://github.com/user-attachments/assets/9a0532a6-bc79-4dbc-b8e7-0103a998eac6)
 
-Contributions
+
 Contributions are welcome! Please feel free to fork the repository, open an issue, or submit a pull request.
 
 Fork the repository: Click the "Fork" button on the repository page to create a copy of the project in your GitHub account.

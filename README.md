@@ -44,75 +44,16 @@ This is a real-time chat application built using the MERN stack (MongoDB, Expres
 ### 6. Logout
 ![Image](https://github.com/user-attachments/assets/9a0532a6-bc79-4dbc-b8e7-0103a998eac6)
 
-## Setup Instructions
-
-### 1. Clone the repository
-
-First, clone the repository to your local machine:
-
-```bash
-git clone https://github.com/yourusername/realtime-chat-app.git
-cd realtime-chat-app
-2. Backend Setup (Node.js + Express)
-Navigate to the backend directory:
-
-bash
-Copy
-Edit
-cd backend
-Install backend dependencies:
-
-bash
-Copy
-Edit
-npm install
-Create a .env file in the root of the backend directory and add the following environment variables:
-
-env
-Copy
-Edit
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-PORT=5000
-Replace your_mongodb_connection_string with your MongoDB connection URI.
-Replace your_jwt_secret with a secret key for JWT.
-Start the backend server:
-
-bash
-Copy
-Edit
-npm start
-The backend should now be running on http://localhost:5000.
-
-3. Frontend Setup (React.js)
-Navigate to the frontend directory:
-
-bash
-Copy
-Edit
-cd frontend
-Install frontend dependencies:
-
-bash
-Copy
-Edit
-npm install
-Start the frontend server:
-
-bash
-Copy
-Edit
-npm start
-The frontend should now be running on http://localhost:3000.
-
-How to Use
-Sign Up: Create a new account by providing a username, email, and password.
-Login: Use your credentials to log into your account.
-Profile: After logging in, you can view and update your profile information.
-Chat: Start chatting with other users in real time. Select a user from the list to begin a conversation.
-Logout: Securely log out from the application.
 Contributions
 Contributions are welcome! Please feel free to fork the repository, open an issue, or submit a pull request.
+
+Fork the repository: Click the "Fork" button on the repository page to create a copy of the project in your GitHub account.
+Create a new branch: It's good practice to create a new branch for each feature or bug fix.
+Make changes: Implement the changes you would like to contribute.
+Commit your changes: Make sure to commit your changes with meaningful commit messages.
+Push the changes: Push your changes to your forked repository.
+Submit a pull request: Open a pull request with a description of the changes.
+Please ensure your code follows the project's coding style and includes appropriate tests if applicable.
 
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
